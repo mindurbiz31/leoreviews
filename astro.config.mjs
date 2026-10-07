@@ -38,5 +38,6 @@ export default defineConfig({
   //   },
   // ],
   integrations: [mdx(), sitemap()],
+  output: 'static',
   adapter: cloudflare(),
 });
