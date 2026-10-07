@@ -1,0 +1,37 @@
+---
+import ImageComp from "../helper/ImageComp.astro";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  title: string;
+  description: string;
+  imgSrc: ImageMetadata;
+  altTxt: string;
+  link: string;
+}
+
+const { title, description, imgSrc, altTxt, link } = Astro.props;
+---
+
+<div
+  class="w-full p-2 flex md:flex-col-reverse flex-row justify-between items-start max-w-sm rounded-lg border border-neutral-200 bg-white shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800"
+>
+  <div class="w-1/2 md:w-full flex flex-col justify-between">
+    <h4 class="card-title" itemprop="headline">
+      <a href={link} itemprop="url">{title}</a>
+    </h4>
+    <p class="card-excerpt" itemprop="description">
+      {description}
+    </p>
+    <span class="author" itemprop="author">Jane Doe</span>
+  </div>
+  <div
+    class="w-1/2 md:w-full h-full flex justify-start items-start overflow-hidden rounded-r-lg"
+  >
+    <ImageComp
+      imgSrc={imgSrc}
+      altTxt={altTxt}
+      class="rounded-lg h-full object-cover"
+    />
+  </div>
+</div>

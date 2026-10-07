@@ -1,0 +1,129 @@
+---
+// src/components/SEO.astro
+
+export interface Props {
+  /** Page title (required) */
+  title: string;
+  /** Meta description */
+  description?: string;
+  /** Canonical URL (absolute or relative) */
+  canonical?: string;
+  /** Robots directives, e.g. "index, follow" */
+  robots?: string;
+  /** Open Graph type, defaults to "website" */
+  ogType?: 'website' | 'article' | 'product' | 'profile';
+  /** Open Graph image URL */
+  ogImage?: string;
+  /** Open Graph image alt text */
+  ogImageAlt?: string;
+  /** Open Graph locale, e.g. "en_US" */
+  ogLocale?: string;
+  /** Twitter card type, defaults to "summary_large_image" */
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+  /** Twitter site handle, e.g. "@mysite" */
+  twitterSite?: string;
+  /** Twitter creator handle, e.g. "@author" */
+  twitterCreator?: string;
+  /** JSON‑LD structured data (object or array of objects) */
+  jsonLd?: Record<string, any> | Record<string, any>[];
+  /** Additional meta tags (name / property / http-equiv) */
+  additionalMeta?: Array<{
+    name?: string;
+    property?: string;
+    httpEquiv?: string;
+    content: string;
+  }>;
+  /** Additional link tags (e.g., alternate hreflang) */
+  additionalLinks?: Array<{
+    rel: string;
+    href: string;
+    hreflang?: string;
+    type?: string;
+  }>;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  robots = 'index, follow',
+  ogType = 'website',
+  ogImage,
+  ogImageAlt,
+  ogLocale = 'en_US',
+  twitterCard = 'summary_large_image',
+  twitterSite,
+  twitterCreator,
+  jsonLd,
+  additionalMeta = [],
+  additionalLinks = [],
+} = Astro.props;
+
+// Ensure canonical is absolute (best practice)
+const canonicalUrl = canonical
+  ? new URL(canonical, Astro.site).href
+  : Astro.url.href;
+
+// Normalise JSON‑LD to an array
+const jsonLdArray = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+---
+
+<head>
+  <!-- Essential meta -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="generator" content={Astro.generator} />
+
+  <!-- Primary SEO -->
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  {robots && <meta name="robots" content={robots} />}
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  {description && <meta property="og:description" content={description} />}
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={canonicalUrl} />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+  {ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+  <meta property="og:locale" content={ogLocale} />
+  <meta property="og:site_name" content={Astro.site?.hostname} />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content={twitterCard} />
+  <meta name="twitter:title" content={title} />
+  {description && <meta name="twitter:description" content={description} />}
+  {ogImage && <meta name="twitter:image" content={ogImage} />}
+  {twitterSite && <meta name="twitter:site" content={twitterSite} />}
+  {twitterCreator && <meta name="twitter:creator" content={twitterCreator} />}
+
+  <!-- JSON‑LD -->
+  {jsonLdArray.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
+
+  <!-- Additional meta tags -->
+  {additionalMeta.map(({ name, property, httpEquiv, content }) => (
+    <meta
+      {...(name && { name })}
+      {...(property && { property })}
+      {...(httpEquiv && { 'http-equiv': httpEquiv })}
+      content={content}
+    />
+  ))}
+
+  <!-- Additional link tags (e.g., hreflang) -->
+  {additionalLinks.map(({ rel, href, hreflang, type }) => (
+    <link
+      rel={rel}
+      href={href}
+      {...(hreflang && { hreflang })}
+      {...(type && { type })}
+    />
+  ))}
+</head>
+
+<body>
+  <slot />
+</body>

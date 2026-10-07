@@ -1,0 +1,32 @@
+---
+// Footer.astro
+const year = new Date().getFullYear();
+---
+
+<footer class="w-full py-8 px-4 font-sans text-gray-600 flex justify-center">
+  <div class="flex flex-col items-center gap-3 text-center">
+    <!-- Top Navigation Links -->
+    <nav class="flex items-center gap-3 text-sm text-gray-800">
+      <a href="/about" class="hover:text-black hover:underline transition-colors">
+        About
+      </a>
+      <span class="text-gray-400 text-xs">•</span>
+      <a href="/archive" class="hover:text-black hover:underline transition-colors">
+        Archive
+      </a>
+      <span class="text-gray-400 text-xs">•</span>
+      <a href="/privacy-policy" class="hover:text-black hover:underline transition-colors">
+        Privacy Policy
+      </a>
+    </nav>
+
+    <!-- Copyright Text -->
+    <div class="flex items-center gap-2 text-xs text-gray-500">
+      <span>&copy; {year} LEO Reviews<sup class="text-[0.6rem] align-super">&copy;</sup></span>
+      <a href="https://leoreviews.com" target="_blank" rel="noopener noreferrer" class="hover:underline">
+        Leoreviews.com
+      </a>
+      <span>All Rights Reserved</span>
+    </div>
+  </div>
+</footer>

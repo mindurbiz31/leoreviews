@@ -1,0 +1,31 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import HeroCard from "../components/home/HeroCard.astro";
+import CardGrid from "../components/home/CardGrid.astro";
+import HeroImg from "../assets/blog-placeholder-2.jpg";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const {
+  id,
+  data: {},
+  body,
+} = posts[0] || { id: null, data: {}, body: "" };
+// console.log('Posts:', posts);
+---
+
+<PageLayout>
+  <div class="flex flex-col items-center justify-start gap-4 w-full">
+    <HeroCard
+      title="Engadget's best of 2026"
+      author="Billy Steele"
+      category="Reviews"
+      imageSrc={HeroImg}
+      imageAlt="Engadget's best of 2026"
+      href={`/blog/${id}`}
+    />
+    <CardGrid />
+  </div>
+</PageLayout>

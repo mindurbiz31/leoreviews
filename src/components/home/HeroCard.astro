@@ -1,0 +1,54 @@
+---
+// ArticleCard.astro
+import ImageComp from "../helper/ImageComp.astro";
+import PlaceholderImg from "../../assets/blog-placeholder-2.jpg";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  title?: string;
+  author?: string;
+  category?: string;
+  imageSrc?: ImageMetadata;
+  imageAlt: string;
+  href?: string;
+}
+
+const {
+  title = "Engadget's best of 2026",
+  author = "Billy Steele",
+  category = "Reviews",
+  imageSrc = PlaceholderImg as unknown as ImageMetadata,
+  imageAlt = "Engadget's best of 2026",
+  href = "#",
+} = Astro.props as Props;
+---
+
+<a href={href} class="group block max-w-md overflow-hidden no-underline">
+  <!-- Image Container -->
+  <div class="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
+    <ImageComp
+      imgSrc={imageSrc}
+      altTxt={imageAlt}
+      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+    />
+
+    <!-- Category Pill Badge -->
+    <span
+      class="absolute left-3 top-3 rounded-full border border-neutral-600/80 bg-neutral-900/90 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
+    >
+      {category}
+    </span>
+  </div>
+
+  <!-- Content Section -->
+  <div class="pt-3">
+    <h2
+      class="tracking-tight transition-colors group-hover:text-neutral-700 dark:text-white dark:group-hover:text-neutral-300"
+    >
+      {title}
+    </h2>
+    <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+      {author}
+    </p>
+  </div>
+</a>

@@ -1,0 +1,250 @@
+---
+// Header.astro
+const menuItems = [
+  { label: "AI", href: "#" },
+  { label: "Gadgets", href: "#" },
+  { label: "Software", href: "#" },
+  { label: "Apps", href: "#" },
+  { label: "Games", href: "#" },
+  { label: "About Us", href: "#" },
+  { label: "Contact", href: "#" },
+];
+---
+
+<header class="header">
+  <div class="nvcontainer">
+    <!-- Top Bar (Logo & Mobile Toggle) -->
+    <div class="top-bar">
+      <a href="/" class="logo" aria-label="MacReview Home">
+        <img
+          src="/images/leo-reviews-logo.png"
+          alt="LEOReviews Logo"
+          width="250"
+          height="90"
+        />
+      </a>
+
+      <!-- Mobile Menu Toggle Button -->
+      <!-- <button
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Toggle navigation menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button> -->
+    </div>
+
+    <!-- Navigation Menu -->
+    <!-- <nav id="mobile-menu" class="navigation">
+      <ul>
+        {
+          menuItems.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav> -->
+  </div>
+</header>
+
+<style>
+  /* Base Header Styles */
+  .header {
+    width: 100%;
+    background-color: var(--gray-gradient);
+    /* background: linear-gradient(var(--gray-gradient)) no-repeat; */
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    padding-bottom: 1.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .nvcontainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /* Top Bar Layout */
+  .top-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Logo Styles */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logo-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #333;
+    padding: 0.2rem 0.4rem;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1;
+  }
+
+  .logo-icon .accent-block {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #4a90e2;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: -0.05em;
+  }
+
+  .logo-text span {
+    color: #4a90e2;
+    font-weight: 500;
+  }
+
+  /* Desktop Navigation */
+  .navigation ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navigation a {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: color 0.2s ease;
+  }
+
+  .navigation a:hover {
+    color: #111;
+  }
+
+  /* Mobile Menu Toggle Button */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    padding: 0.25rem;
+  }
+
+  /* Responsive Styles (Mobile) */
+  @media (max-width: 768px) {
+    .container {
+      gap: 0;
+    }
+
+    .top-bar {
+      padding-bottom: 0; /* Remove padding when menu is closed */
+    }
+
+    /* Show hamburger menu */
+    .menu-toggle {
+      display: block;
+    }
+
+    /* Hide navigation by default on mobile */
+    .navigation {
+      display: none;
+      width: 100%;
+    }
+
+    /* Show navigation when is-open class is added via JS */
+    .navigation.is-open {
+      display: block;
+      margin-top: 1.5rem;
+    }
+
+    .navigation ul {
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      border-top: 1px solid #eee;
+    }
+
+    .navigation a {
+      font-size: 1.1rem;
+      display: block;
+      padding: 0.5rem 0;
+    }
+  }
+
+  /* Desktop Adjustments */
+  @media (min-width: 769px) {
+    .top-bar {
+      justify-content: center;
+      padding-bottom: 0;
+    }
+
+    /* Hide the mobile toggle on desktop */
+    .menu-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Client-side script for mobile menu toggle
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.querySelector(".menu-toggle");
+    const navMenu = document.querySelector(".navigation");
+
+    if (toggleBtn && navMenu) {
+      toggleBtn.addEventListener("click", () => {
+        const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+
+        // Toggle the menu visibility
+        navMenu.classList.toggle("is-open");
+
+        // Update aria-expanded attribute for accessibility
+        toggleBtn.setAttribute("aria-expanded", (!isExpanded).toString());
+      });
+    }
+  });
+</script>

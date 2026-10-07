@@ -1,0 +1,15 @@
+---
+import { Picture } from "astro:assets";
+import type { HTMLAttributes } from 'astro/types';
+import type { ImageMetadata } from "astro";
+
+interface Props extends HTMLAttributes<'div'> {
+  imgSrc: ImageMetadata;
+  altTxt: string;
+}
+
+const { imgSrc, altTxt, ...rest } = Astro.props;
+---
+
+<!-- `alt` is mandatory on the Picture component -->
+<Picture src={imgSrc} formats={["avif", "webp"]} alt={altTxt} {...rest} />
