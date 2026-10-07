@@ -33,4 +33,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: /public_html/
-          dangerous-clean-slate: false # Set to true if you want to wipe public_html before uploading
+          dangerous-clean-slate: true # Set to true if you want to wipe public_html before uploading
