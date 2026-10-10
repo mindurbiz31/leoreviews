@@ -1,0 +1,47 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// Filter out h1 tags (typically title) and keep h2/h3
+const filteredHeadings = headings.filter((h) => h.depth > 1 && h.depth <= 3);
+---
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <ul>
+    {
+      filteredHeadings.map((heading) => (
+        <li class={`depth-${heading.depth}`}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .toc {
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    width: min( 100%, 700px);
+  }
+  .toc ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .depth-2 {
+    margin-left: 0rem;
+    font-weight: 600;
+  }
+  .depth-3 {
+    margin-left: 1rem;
+    font-size: 0.9em;
+  }
+</style>

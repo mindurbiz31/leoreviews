@@ -12,31 +12,31 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: "https://leoreviews.com/",
-
-  // fonts: [
-  //   {
-  //     provider: fontProviders.local(),
-  //     name: "Atkinson",
-  //     cssVariable: "--font-atkinson",
-  //     fallbacks: ["sans-serif"],
-  //     options: {
-  //       variants: [
-  //         {
-  //           src: ["./src/assets/fonts/atkinson-regular.woff"],
-  //           weight: 400,
-  //           style: "normal",
-  //           display: "swap",
-  //         },
-  //         {
-  //           src: ["./src/assets/fonts/atkinson-bold.woff"],
-  //           weight: 700,
-  //           style: "normal",
-  //           display: "swap",
-  //         },
-  //       ],
-  //     },
-  //   },
-  // ],
+  trailingSlash: 'never',
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "Atkinson",
+      cssVariable: "--font-atkinson",
+      fallbacks: ["sans-serif"],
+      options: {
+        variants: [
+          {
+            src: ["./src/assets/fonts/atkinson-regular.woff"],
+            weight: 400,
+            style: "normal",
+            display: "swap",
+          },
+          {
+            src: ["./src/assets/fonts/atkinson-bold.woff"],
+            weight: 700,
+            style: "normal",
+            display: "swap",
+          },
+        ],
+      },
+    },
+  ],
   integrations: [mdx(), sitemap()],
   output: 'static',
   adapter: cloudflare(),

@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import BlogLayout from "../../layouts/BlogLayout.astro";
+import TableOfContents from "../../components/blogs/toc.astro";
 // import BlogPost from '../../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
@@ -26,7 +27,7 @@ console.log("Post:", {
   imageSrc,
   imageAlt,
 });
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <BlogLayout
@@ -37,5 +38,84 @@ const { Content } = await render(post);
   imageSrc={imageSrc}
   imageAlt={imageAlt}
 >
+  <TableOfContents headings={headings} />
   <Content />
 </BlogLayout>
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 16px;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    display: table;
+  }
+
+  thead {
+    background: #f8fafc;
+  }
+
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 16px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f9fafb;
+  }
+
+  tbody tr:hover {
+    background: #f3f4f6;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    thead,
+    tbody {
+      width: 100%;
+    }
+
+    th,
+    td {
+      padding: 11px 13px;
+    }
+
+    th {
+      font-size: 14px;
+    }
+
+    td {
+      white-space: normal;
+      min-width: 140px;
+    }
+  }
+</style>

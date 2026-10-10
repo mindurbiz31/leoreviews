@@ -1,38 +1,145 @@
 ---
 import "../styles/global.css";
+import { Image } from "astro:assets";
 import MainHead from "./helper/MainHead.astro";
 import Nav from "./helper/Nav.astro";
 import Footer from "./helper/Footer.astro";
 import ImageComp from "../components/helper/ImageComp.astro";
+import myImage from "../assets/images/ad_leoreviews.png";
 
 const { title, description, pubDate, author, imageSrc, imageAlt } = Astro.props;
 ---
 
-<MainHead title={title}>
+<MainHead
+  title={`LEO Reviews - ${title}`}
+  description={description}
+  ogImage={imageSrc}
+  ogImageAlt={imageAlt}
+>
   <div
     class="flex flex-col min-h-screen justify-start items-center w-full bg-neutral-100 dark:bg-neutral-950"
   >
     <Nav />
-    <article
-      class="flex flex-col items-center justify-start max-w-[1220px] gap-2 px-2 py-4 w-full"
+    <div
+      class="relative w-full max-w-[1220px] flex flex-row justify-center items-start gap-4 px-2 py-4"
     >
-      <h1>{title}</h1>
-      <ImageComp
-        imgSrc={imageSrc}
-        altTxt={imageAlt}
-        class="w-full max-w-[800px] rounded-lg shadow-md"
-      />
-      <!-- <img
-        src={imageSrc.src}
-        alt={imageAlt}
-        class="w-full max-w-[800px] rounded-lg shadow-md"
-      /> -->
-      <p class="text-lg text-muted-foreground">{description}</p>
-      <p class="text-sm text-muted-foreground">
-        By {author} on {pubDate.toLocaleDateString()}
-      </p>
-      <slot />
-    </article>
+      <article
+        class="flex flex-col items-start justify-start w-full xl:max-w-[75%] gap-2 px-2 py-4"
+      >
+        <h1>{title}</h1>
+        <!-- <ImageComp
+          imgSrc={imageSrc}
+          altTxt={imageAlt}
+          class="w-full max-w-[800px] rounded-lg shadow-md"
+        /> -->
+        <Image
+          src={imageSrc}
+          alt={imageAlt}
+          width={800}
+          height={400}
+          class="w-full max-w-[800px] rounded-lg shadow-md"
+        />
+
+        <p class="text-lg text-muted-foreground">{description}</p>
+        <p class="text-sm text-muted-foreground">
+          By {author} on {pubDate.toLocaleDateString()}
+        </p>
+
+        <slot />
+      </article>
+      <section
+        class="hidden relative xl:block flex flex-col items-start justify-start max-w-[25%] gap-2 px-2 py-4 w-full"
+      >
+        <div class="fixed top-40 left-[calc(50%+320px)]">
+          <Image
+            src={myImage}
+            alt="A descriptive alt text"
+            width={300}
+            height={600}
+          />
+        </div>
+      </section>
+    </div>
+
     <Footer />
   </div>
 </MainHead>
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 16px;
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    display: table;
+  }
+
+  thead {
+    background: #f8fafc;
+  }
+
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 16px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f9fafb;
+  }
+
+  tbody tr:hover {
+    background: #f3f4f6;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    thead,
+    tbody {
+      width: 100%;
+    }
+
+    th,
+    td {
+      padding: 11px 13px;
+    }
+
+    th {
+      font-size: 14px;
+    }
+
+    td {
+      white-space: normal;
+      min-width: 140px;
+    }
+  }
+</style>

@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+import LEOReviewsLogo from "../../assets/images/leo-reviews-logo.png";
+
 // Header.astro
 const menuItems = [
   { label: "AI", href: "#" },
@@ -16,11 +19,12 @@ const menuItems = [
     <!-- Top Bar (Logo & Mobile Toggle) -->
     <div class="top-bar">
       <a href="/" class="logo" aria-label="MacReview Home">
-        <img
-          src="/images/leo-reviews-logo.png"
+        <Image
+          src={LEOReviewsLogo}
           alt="LEOReviews Logo"
-          width="250"
-          height="90"
+          width={250}
+          height={90}
+          class="w-full max-w-[250px] self-center"
         />
       </a>
 
@@ -229,7 +233,7 @@ const menuItems = [
   }
 </style>
 
-<script>
+<!-- <script>
   // Client-side script for mobile menu toggle
   document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.querySelector(".menu-toggle");
@@ -247,4 +251,4 @@ const menuItems = [
       });
     }
   });
-</script>
+</script> -->
