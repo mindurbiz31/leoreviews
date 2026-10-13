@@ -3,4 +3,4 @@
 
 export const SITE_TITLE = "LEO Reviews";
 export const SITE_DESCRIPTION =
-  "LeoReviews is your trusted destination for exploring the latest in technology, AI, software, gadgets, and gaming. Discover expert reviews, insightful guides, honest opinions, and practical tips to stay ahead in the digital world.";
+  "Read the latest technology news, reviews, guides, and insights on LEO Reviews.";

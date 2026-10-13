@@ -4,7 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import cloudflare from "@astrojs/cloudflare";
+import partytown from "@astrojs/partytown";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: "https://leoreviews.com/",
-  trailingSlash: 'never',
+  trailingSlash: "never",
   fonts: [
     {
       provider: fontProviders.local(),
@@ -37,7 +37,14 @@ export default defineConfig({
       },
     },
   ],
-  integrations: [mdx(), sitemap()],
-  output: 'static',
-  adapter: cloudflare(),
+  integrations: [
+    mdx(),
+    sitemap(),
+    partytown({
+      config: {
+        forward: ["dataLayer.push"],
+      },
+    }),
+  ],
+  output: "static",
 });
