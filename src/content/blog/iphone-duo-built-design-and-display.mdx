@@ -3,14 +3,22 @@ title: "iPhone Duo: Durable Apple Build or Fragile Luxury?"
 description: "iPhone Duo comes with a book-style foldable design, custom materials, Super Retina XDR display and flawless titanium frame tailored for dual screens. Here, we will see marble engineering of this new unique device from Apple’s vault."
 pubDate: "2026-10-02"
 author: "Leo Stinson"
+category: "Gadgets"
 imageSrc: "../../assets/blog-placeholder-5.jpg"
 imageAlt: "iPhone Duo Foldable Design and Display"
 ---
-import { Image } from 'astro:assets';
-import myImage from '../../assets/images/check.jpg';
 
+import { Image } from "astro:assets";
+import ResponsiveTable from "../../components/blogs/ResponsiveTable.astro";
+import myImage from "../../assets/images/check.jpg";
 
-<Image src={myImage} alt="A descriptive alt text" width={800} height={400} class="w-full max-w-[800px] rounded-lg shadow-md self-center" />
+<Image
+  src={myImage}
+  alt="A descriptive alt text"
+  width={800}
+  height={400}
+  class="w-full max-w-[800px] rounded-lg shadow-md self-center"
+/>
 
 ## Grade 5 Titanium: Aerospace Technology in Your Hand
 
@@ -18,20 +26,22 @@ The **iPhone Duo** frame is crafted with **Grade 5 Titanium**—an advanced allo
 
 As the icing on the cake, a fine brushed finish reduces visible fingerprint smudges compared to high-gloss stainless steel, giving the outer band a subtle matte texture that resists micro-scratches.
 
----
 
 ## Dimensions & Weight
 
-| Specification        | iPhone Duo               |
-| :------------------- | :----------------------- |
-| **Open Thickness**   | 5.2 mm                   |
-| **Folded Thickness** | 11.3 mm                  |
-| **Open Dimensions**  | 164.6 × 117.8 mm         |
-| **Weight**           | 254 g                    |
-| **Materials**        | Titanium foldable design |
-| **Colors**           | Night Sky, Star White    |
+<ResponsiveTable
+  tableData={[
+    ["Specification", "iPhone Duo"],
+    ["Open Thickness", "5.2 mm"],
+    ["Folded Thickness", "11.3 mm"],
+    ["Open Dimensions", "164.6 × 117.8 mm"],
+    ["Weight", "254 g"],
+    ["Materials", "Titanium foldable design"],
+    ["Colors", "Night Sky, Star White"],
+  ]}
+  caption=""
+/>
 
----
 
 ## Water & Dust Test: Indestructible or Overhyped?
 

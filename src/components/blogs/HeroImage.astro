@@ -1,0 +1,33 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  imageName: string; // e.g., "avatar-1.jpg"
+  alt: string;
+}
+
+const { imageName, alt } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/*.{jpeg,jpg,png,svg}",
+  { eager: true },
+);
+
+// 2. Construct the exact path key to match the glob object
+const imagePath = `/src/assets/images/${imageName}`;
+
+// 3. Validate that the image exists to catch typos early
+if (!images[imagePath]) {
+  throw new Error(`"${imageName}" does not exist in the src/assets folder.`);
+}
+
+const imageSrc = images[imagePath].default;
+---
+
+<Image
+  src={imageSrc}
+  alt={alt}
+  class="w-full max-w-[800px] rounded-lg shadow-md self-center"
+  loading="lazy"
+/>

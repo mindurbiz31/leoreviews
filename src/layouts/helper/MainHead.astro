@@ -33,26 +33,19 @@ interface Props {
 const {
   title,
   description = "Read the latest technology news, reviews, guides, and insights.",
-
   canonicalURL,
-
   noindex = false,
-
   ogType = "website",
   ogImage,
   ogImageAlt,
-
   publishedTime,
   modifiedTime,
   author,
   category,
   tags = [],
-
   siteName = "LeoReviews",
-  siteUrl,
-
+  siteUrl = "https://leoreviews.com",
   jsonLd,
-
   favicon = "/favicon.png",
 } = Astro.props;
 
@@ -94,7 +87,7 @@ const resolvedCanonicalURL =
 // --------------------------------------------------
 
 const resolvedOgImage = ogImage
-  ? new URL(ogImage, resolvedSiteUrl).href
+  ? new URL(`/src/assets/images/${ogImage}`, resolvedSiteUrl).href
   : undefined;
 
 // --------------------------------------------------
@@ -177,7 +170,7 @@ const schemas = [
   <title>{title}</title>
 
   <meta name="description" content={description} />
-
+  <meta charset="UTF-8" />
   <meta
     name="robots"
     content={noindex ? "noindex, nofollow" : "index, follow"}

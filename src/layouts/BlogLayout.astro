@@ -4,10 +4,22 @@ import { Image } from "astro:assets";
 import MainHead from "./helper/MainHead.astro";
 import Nav from "./helper/Nav.astro";
 import Footer from "./helper/Footer.astro";
-import ImageComp from "../components/helper/ImageComp.astro";
-import myImage from "../assets/images/ad_leoreviews.png";
+import adImage from "../assets/images/ad_leoreviews.png";
+import Breadcrumbs from "../components/blogs/Breadcrumbs.astro";
+import HeroImage from "../components/blogs/HeroImage.astro";
 
-const { title, description, pubDate, author, imageSrc, imageAlt } = Astro.props;
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  author: string;
+  imageSrc: string;
+  imageAlt: string;
+  category: string;
+}
+
+const { title, description, pubDate, author, imageSrc, imageAlt, category } =
+  Astro.props;
 ---
 
 <MainHead
@@ -20,31 +32,24 @@ const { title, description, pubDate, author, imageSrc, imageAlt } = Astro.props;
     class="flex flex-col min-h-screen justify-start items-center w-full bg-neutral-100 dark:bg-neutral-950"
   >
     <Nav />
+
     <div
       class="relative w-full max-w-[1220px] flex flex-row justify-center items-start gap-4 px-2 py-4"
     >
       <article
         class="flex flex-col items-start justify-start w-full xl:max-w-[75%] gap-2 px-2 py-4"
       >
+        <Breadcrumbs items={["Home", category]} />
         <h1>{title}</h1>
-        <!-- <ImageComp
-          imgSrc={imageSrc}
-          altTxt={imageAlt}
-          class="w-full max-w-[800px] rounded-lg shadow-md"
-        /> -->
-        <Image
-          src={imageSrc}
-          alt={imageAlt}
-          width={800}
-          height={400}
-          class="w-full max-w-[800px] rounded-lg shadow-md"
-        />
-
         <p class="text-lg text-muted-foreground">{description}</p>
         <p class="text-sm text-muted-foreground">
-          By {author} on {pubDate.toLocaleDateString()}
+          <span class="text-sm">By {author}</span>
+          <span class="text-xs font-bold">
+            published on {pubDate.toLocaleDateString()}</span
+          >
         </p>
 
+        <HeroImage imageName={imageSrc} alt={imageAlt} />
         <slot />
       </article>
       <section
@@ -52,10 +57,11 @@ const { title, description, pubDate, author, imageSrc, imageAlt } = Astro.props;
       >
         <div class="fixed top-40 left-[calc(50%+320px)]">
           <Image
-            src={myImage}
+            src={adImage}
             alt="A descriptive alt text"
             width={300}
             height={600}
+            loading="lazy"
           />
         </div>
       </section>

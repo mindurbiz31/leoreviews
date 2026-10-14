@@ -1,0 +1,298 @@
+
+---
+interface Props {
+  title?: string;
+  headings?: {
+    depth: number;
+    slug: string;
+    text: string;
+  }[];
+  selector?: string;
+}
+
+const {
+  title = "Table of Contents",
+  headings,
+  selector = "article h2, article h3",
+} = Astro.props;
+
+const contents =
+  headings ??
+  [];
+
+const componentId = `toc-${Math.random().toString(36).slice(2, 10)}`;
+---
+
+<nav
+  id={componentId}
+  class="w-full my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900"
+  aria-label={title}
+  data-toc
+  data-selector={selector}
+>
+  <button
+    type="button"
+    class="group flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 sm:px-5 hover:cursor-pointer dark:hover:bg-slate-800"
+    aria-expanded="false"
+    aria-controls={`${componentId}-panel`}
+    data-toc-toggle
+  >
+    <span class="flex min-w-0 items-center gap-3">
+      <span
+        class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+        aria-hidden="true"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="21"
+          height="21"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M8 6h13M8 12h13M8 18h13" />
+          <path d="M3 6h.01M3 12h.01M3 18h.01" />
+        </svg>
+      </span>
+
+      <span class="min-w-0">
+        <span class="block text-sm font-semibold tracking-tight text-slate-900 sm:text-base dark:text-white">
+          {title}
+        </span>
+        <span
+          class="mt-0.5 block text-xs text-slate-500 dark:text-slate-400"
+          data-toc-count
+        >
+          {contents.length > 0
+            ? `${contents.length} sections`
+            : "Explore this article"}
+        </span>
+      </span>
+    </span>
+
+    <span
+      class="flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition-transform duration-200 group-aria-expanded:rotate-180 dark:border-slate-700 dark:text-slate-300"
+      aria-hidden="true"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </span>
+  </button>
+
+  <div
+    id={`${componentId}-panel`}
+    class="hidden border-t border-slate-100 dark:border-slate-800"
+    data-toc-panel
+    inert
+  >
+    <div class="px-4 py-4 sm:px-5">
+      <ol
+        class="space-y-1"
+        data-toc-list
+      >
+        {contents.map((heading) => (
+          <li class={heading.depth === 3 ? "ml-4 sm:ml-6" : ""}>
+            <a
+              href={`#${heading.slug}`}
+              data-toc-link
+              class="flex items-start gap-3 rounded-lg px-3 py-2.5 text-sm leading-6 text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"
+            >
+              <span
+                class="mt-[9px] size-1.5 shrink-0 rounded-full bg-slate-300 dark:bg-slate-600"
+                aria-hidden="true"
+              ></span>
+              <span>{heading.text}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      <p
+        class="hidden px-3 py-2 text-sm text-slate-500 dark:text-slate-400"
+        data-toc-empty
+      >
+        No headings found in this article.
+      </p>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function initTableOfContents() {
+    document.querySelectorAll<HTMLElement>("[data-toc]").forEach((root) => {
+      if (root.dataset.initialized === "true") return;
+      root.dataset.initialized = "true";
+
+      const toggle = root.querySelector<HTMLButtonElement>(
+        "[data-toc-toggle]"
+      );
+      const panel = root.querySelector<HTMLElement>("[data-toc-panel]");
+      const list = root.querySelector<HTMLOListElement>("[data-toc-list]");
+      const count = root.querySelector<HTMLElement>("[data-toc-count]");
+      const empty = root.querySelector<HTMLElement>("[data-toc-empty]");
+
+      if (!toggle || !panel || !list) return;
+
+      const selector = root.dataset.selector || "article h2, article h3";
+      const articleHeadings = Array.from(
+        document.querySelectorAll<HTMLElement>(selector)
+      );
+
+      // Generate IDs for headings that don't already have one.
+      articleHeadings.forEach((heading, index) => {
+        if (!heading.id) {
+          const base =
+            heading.textContent
+              ?.trim()
+              .toLowerCase()
+              .replace(/[^\p{L}\p{N}\s-]/gu, "")
+              .replace(/\s+/g, "-")
+              .replace(/-+/g, "-") || `section-${index + 1}`;
+
+          let slug = base;
+          let suffix = 2;
+
+          while (document.getElementById(slug)) {
+            slug = `${base}-${suffix++}`;
+          }
+
+          heading.id = slug;
+        }
+      });
+
+      // Use supplied links when present; otherwise build them automatically.
+      if (list.children.length === 0) {
+        articleHeadings.forEach((heading) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          const marker = document.createElement("span");
+          const label = document.createElement("span");
+
+          const depth = heading.tagName === "H3" ? 3 : 2;
+
+          li.className = depth === 3 ? "ml-4 sm:ml-6" : "";
+
+          link.href = `#${heading.id}`;
+          link.dataset.tocLink = "";
+          link.className =
+            "flex items-start gap-3 rounded-lg px-3 py-2.5 text-sm leading-6 text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300";
+
+          marker.className =
+            "mt-[9px] size-1.5 shrink-0 rounded-full bg-slate-300 dark:bg-slate-600";
+          marker.setAttribute("aria-hidden", "true");
+
+          label.textContent = heading.textContent?.trim() ?? "";
+          link.append(marker, label);
+          li.append(link);
+          list.append(li);
+        });
+      }
+
+      const links = Array.from(
+        list.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")
+      );
+
+      if (count) {
+        count.textContent = `${links.length} sections`;
+      }
+
+      if (empty) {
+        empty.classList.toggle("hidden", links.length > 0);
+      }
+
+      list.classList.toggle("hidden", links.length === 0);
+
+      function setExpanded(expanded: boolean) {
+        toggle!.setAttribute("aria-expanded", String(expanded));
+        panel!.classList.toggle("hidden", !expanded);
+        panel!.inert = !expanded;
+      }
+
+      // Initially closed, including after initialization.
+      setExpanded(false);
+
+      toggle.addEventListener("click", () => {
+        setExpanded(toggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      links.forEach((link) => {
+        link.addEventListener("click", () => {
+          const target = document.getElementById(
+            decodeURIComponent(link.hash.slice(1))
+          );
+
+          if (target) {
+            target.scrollIntoView({
+              behavior: window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+              ).matches
+                ? "auto"
+                : "smooth",
+              block: "start",
+            });
+          }
+
+          setExpanded(false);
+        });
+      });
+
+      // Highlight the heading currently in view.
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort(
+                (a, b) =>
+                  a.boundingClientRect.top - b.boundingClientRect.top
+              )[0];
+
+            if (!visible) return;
+
+            links.forEach((link) => {
+              const active =
+                link.hash.slice(1) === visible.target.id;
+
+              link.classList.toggle("bg-blue-50", active);
+              link.classList.toggle("text-blue-700", active);
+              link.classList.toggle("font-medium", active);
+              link.classList.toggle("dark:bg-slate-800", active);
+              link.classList.toggle("dark:text-blue-300", active);
+
+              if (active) {
+                link.setAttribute("aria-current", "location");
+              } else {
+                link.removeAttribute("aria-current");
+              }
+            });
+          },
+          {
+            rootMargin: "-15% 0px -70% 0px",
+            threshold: 0,
+          }
+        );
+
+        articleHeadings.forEach((heading) => observer.observe(heading));
+      }
+    });
+  }
+
+  initTableOfContents();
+
+  // Supports Astro page transitions if enabled.
+  document.addEventListener("astro:page-load", initTableOfContents);
+</script>

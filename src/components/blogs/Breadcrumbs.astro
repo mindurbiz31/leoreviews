@@ -1,0 +1,21 @@
+---
+interface Props {
+  items: string[];
+  class?: string;
+}
+
+const { items = ["Home", "Gadget"], class: className = "" } = Astro.props;
+---
+
+<div
+  class="w-full flex flex-wrap justify-start items-center gap-2 text-sm text-slate-500 dark:text-slate-400 {className}"
+>
+  {
+    items.map((item, index) => (
+      <span>
+        {item}
+        {index < items.length - 1 && " > "}
+      </span>
+    ))
+  }
+</div>
