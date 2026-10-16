@@ -1,0 +1,106 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  ogType: string;
+  siteName: string;
+  resolvedSiteUrl: URL;
+  resolvedCanonicalURL: URL;
+  resolvedOgImage: string;
+  author: string;
+  publishedDate: string;
+  modifiedDate: string;
+  category: string;
+  tags: string[];
+  jsonLd: unknown;
+}
+
+const {
+  title,
+  description,
+  ogType,
+  siteName,
+  resolvedSiteUrl,
+  resolvedCanonicalURL,
+  resolvedOgImage,
+  author,
+  publishedDate,
+  modifiedDate,
+  category,
+  tags,
+  jsonLd,
+} = Astro.props;
+
+// --------------------------------------------------
+// JSON-LD
+// --------------------------------------------------
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteName,
+  url: resolvedSiteUrl.href,
+};
+
+const articleSchema =
+  ogType === "article"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        url: resolvedCanonicalURL.href,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": resolvedCanonicalURL.href,
+        },
+
+        ...(resolvedOgImage && {
+          image: [resolvedOgImage],
+        }),
+
+        ...(author && {
+          author: {
+            "@type": "Person",
+            name: author,
+          },
+        }),
+
+        ...(siteName && {
+          publisher: {
+            "@type": "Organization",
+            name: siteName,
+            url: resolvedSiteUrl.href,
+          },
+        }),
+
+        ...(publishedDate && {
+          datePublished: publishedDate,
+        }),
+
+        ...(modifiedDate && {
+          dateModified: modifiedDate,
+        }),
+
+        ...(category && {
+          articleSection: category,
+        }),
+
+        ...(tags.length > 0 && {
+          keywords: tags,
+        }),
+      }
+    : null;
+
+const schemas = [
+  websiteSchema,
+  ...(articleSchema ? [articleSchema] : []),
+  ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : []),
+];
+---
+
+<!-- JSON-LD -->{
+  schemas.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))
+}

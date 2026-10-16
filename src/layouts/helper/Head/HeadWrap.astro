@@ -1,0 +1,168 @@
+---
+import { getImage } from "astro:assets";
+import BaseTags from "./BaseTags.astro";
+import OGTags from "./OGTags.astro";
+import BlogSchema from "./BlogSchema.astro";
+import GATag from "./GATag.astro";
+
+interface Props {
+  id?: string;
+  title: string;
+  description?: string;
+
+  // SEO
+  canonicalURL?: URL;
+  noindex?: boolean;
+
+  // Open Graph / Social
+  ogType?: "website" | "article";
+  ogImage?: string;
+  ogImageAlt?: string;
+
+  // Article
+  publishedTime?: string | Date;
+  modifiedTime?: string | Date;
+  author?: string;
+  category?: string;
+  tags?: string[];
+
+  // Site
+  siteName?: string;
+  siteUrl?: string | URL;
+
+  // JSON-LD
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+
+  // Optional
+  favicon?: string;
+}
+
+const {
+  id,
+  title,
+  description = "Read the latest technology news, reviews, guides, and insights.",
+  canonicalURL,
+  noindex = false,
+  ogType = "website",
+  ogImage,
+  ogImageAlt,
+  publishedTime,
+  modifiedTime,
+  author,
+  category,
+  tags = [],
+  siteName = "LEO Reviews",
+  siteUrl = "https://leoreviews.com",
+  jsonLd,
+  favicon = "/favicon.svg",
+} = Astro.props;
+
+// --------------------------------------------------
+// Site URL
+// --------------------------------------------------
+
+const resolvedSiteUrl = siteUrl ? new URL(siteUrl) : Astro.site;
+
+if (!resolvedSiteUrl) {
+  throw new Error(
+    "BaseHead.astro: Configure `site` in astro.config.mjs or provide the `siteUrl` prop.",
+  );
+}
+
+// --------------------------------------------------
+// Canonical URL
+// --------------------------------------------------
+
+const resolvedCanonicalURL =
+  canonicalURL ?? new URL(Astro.url.pathname, resolvedSiteUrl);
+
+// --------------------------------------------------
+// Helpers
+// --------------------------------------------------
+
+const normalizeDate = (date?: string | Date) => {
+  if (!date) return undefined;
+
+  if (date instanceof Date) {
+    return date.toISOString();
+  }
+
+  return date;
+};
+
+// --------------------------------------------------
+// Dates
+// --------------------------------------------------
+
+const publishedDate = normalizeDate(publishedTime);
+const modifiedDate = normalizeDate(modifiedTime);
+
+// --------------------------------------------------
+// Images
+// --------------------------------------------------
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/*.{jpeg,jpg,png,svg}",
+  { eager: true },
+);
+
+// 2. Construct the exact path key to match the glob object
+const imagePath = `/src/assets/images/${ogImage}`;
+console.log("ogImageUrl:", { imagePath, images, ogImage });
+// 3. Validate that the image exists to catch typos early
+if (!images[imagePath]) {
+  throw new Error(`"${ogImage}" does not exist in the src/assets folder.`);
+}
+
+const imageSrc = images[imagePath].default;
+const optimizedImage = await getImage({
+  src: imageSrc,
+  format: "jpeg",
+  width: 1200,
+  height: 630,
+});
+const ogImageUrl = new URL(optimizedImage.src, Astro.site).href;
+console.log("ogImageUrl:", ogImageUrl);
+---
+
+<BaseTags
+  title={title}
+  description={description}
+  noindex={noindex}
+  favicon={favicon}
+  resolvedCanonicalURL={resolvedCanonicalURL}
+/>
+
+<OGTags
+  title={title}
+  description={description}
+  siteName={siteName}
+  ogType={ogType}
+  ogImageUrl={ogImageUrl}
+  ogImageAlt={ogImageAlt}
+  resolvedSiteUrl={resolvedSiteUrl}
+  resolvedCanonicalURL={resolvedCanonicalURL}
+  publishedDate={publishedDate}
+  modifiedDate={modifiedDate}
+  author={author}
+  tags={tags}
+  category={category}
+/>
+
+<BlogSchema
+  title={title}
+  description={description}
+  ogType={ogType}
+  siteName={siteName}
+  resolvedSiteUrl={resolvedSiteUrl}
+  resolvedCanonicalURL={resolvedCanonicalURL}
+  resolvedOgImage={ogImageUrl}
+  author={author || ""}
+  publishedDate={publishedDate || ""}
+  modifiedDate={modifiedDate || ""}
+  category={category || "Gadgets"}
+  tags={tags}
+  jsonLd={jsonLd}
+/>
+
+<GATag />

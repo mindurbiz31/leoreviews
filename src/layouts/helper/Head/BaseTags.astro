@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  favicon?: string;
+  resolvedCanonicalURL: URL;
+}
+
+const { title, description, noindex, favicon, resolvedCanonicalURL } =
+  Astro.props;
+---
+
+<!-- Basic SEO -->
+<title>{title}</title>
+
+<meta name="description" content={description} />
+<meta charset="UTF-8" />
+<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+
+<meta
+  name="googlebot"
+  content={noindex ? "noindex, nofollow" : "index, follow"}
+/>
+
+<!-- Canonical -->
+<link rel="canonical" href={resolvedCanonicalURL.href} />
+
+<!-- Viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Theme -->
+<meta name="theme-color" content="#ffffff" />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href={favicon} />

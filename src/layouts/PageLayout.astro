@@ -3,9 +3,31 @@ import "../styles/global.css";
 import MainHead from "./helper/MainHead.astro";
 import Nav from "./helper/Nav.astro";
 import Footer from "./helper/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  ogType?: "website" | "article";
+  ogImage?: string;
+  ogImageAlt?: string;
+}
+
+const {
+  title,
+  description = "Read the latest technology news, reviews, guides, and insights.",
+  ogType = "website",
+  ogImage,
+  ogImageAlt,
+} = Astro.props;
 ---
 
-<MainHead title="Page">
+<MainHead
+  title="LEO Reviews - Home"
+  description="Read the latest technology news, reviews, guides, and insights."
+  ogType="website"
+  ogImage="Leo_Reviews_ Honest_Choices_ogimage.png"
+  ogImageAlt="LEO Reviews - Honest Choices"
+>
   <div
     class="flex flex-col min-h-screen justify-start items-center w-full bg-neutral-100 dark:bg-neutral-950"
   >
